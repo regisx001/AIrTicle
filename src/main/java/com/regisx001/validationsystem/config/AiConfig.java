@@ -11,7 +11,7 @@ public class AiConfig {
     @Bean
     public AIAnalysisConfig aiAnalysisConfig() {
         return AIAnalysisConfig.builder()
-                .minWordCount(100)
+                .minWordCount(30)
                 .maxWordCount(10000)
                 .confidenceThreshold(0.75)
                 .autoApprovalThreshold(0.90)

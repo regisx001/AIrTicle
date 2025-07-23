@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: validationsystem
+  ai:
+    openai:
+      api-key: ${GROQ_API_KEY}
+      base-url: ${GROQ_BASE_URL}
+      chat:
+        options:
+          model: ${GROQ_MODEL}

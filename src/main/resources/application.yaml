@@ -1,6 +1,15 @@
 spring:
   application:
     name: validationsystem
+  datasource:
+    url: jdbc:postgresql://localhost:5432/approve_system?createDatabaseIfNotExist=true
+    username: admin
+    password: admin123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
   ai:
     openai:
       api-key: ${GROQ_API_KEY}

@@ -17,13 +17,15 @@ public class AIAnalysisResponse {
     private Double overallScore;
     private String recommendation;
     private String feedback;
-    private String recommendations;
+    private List<String> recommendations; // Changed from String to List<String>
 
     private ContentQuality contentQuality;
     private Grammar grammar;
     private SEO seo;
+    private Appropriateness appropriateness; // Added missing field
 
     private List<String> flaggedIssues;
+    private Integer estimatedReadTime; // Added missing field
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -45,5 +47,12 @@ public class AIAnalysisResponse {
     public static class SEO {
         private Double score;
         private List<String> suggestions;
+    }
+
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Appropriateness {
+        private Double score;
+        private String feedback;
     }
 }

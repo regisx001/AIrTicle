@@ -40,14 +40,6 @@ public class Article {
     @Column(length = 500)
     private String featuredImage;
 
-    // @Column(nullable = false)
-    // @Builder.Default
-    // private Integer viewCount = 0;
-
-    // @Column(nullable = false)
-    // @Builder.Default
-    // private Integer likeCount = 0;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

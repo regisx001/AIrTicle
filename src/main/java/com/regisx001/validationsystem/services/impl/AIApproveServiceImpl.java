@@ -1,5 +1,7 @@
 package com.regisx001.validationsystem.services.impl;
 
+import java.util.UUID;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,13 @@ public class AIApproveServiceImpl implements AIApproveService {
         ApprovalResult result = utils.buildApprovalResult(article, utils.parseAIResponse(aiResponse), analyzeTimeMs);
         approvalResultRepository.save(result);
         // return result;
+    }
+
+    @Override
+    public ApprovalResult getLatestApprovalResult(UUID id) {
+        ApprovalResult result = approvalResultRepository.findByArticleId(id)
+                .orElseThrow(() -> new RuntimeException("Not Result for this article"));
+        return result;
     }
 
 }

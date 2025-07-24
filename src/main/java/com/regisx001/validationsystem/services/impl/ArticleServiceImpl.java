@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.stringtemplate.v4.compiler.CodeGenerator.primary_return;
 
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ArticleServiceImpl implements ArticleService {
+
     private final ArticleRepository articleRepository;
     private final AIApproveService aiApproveService;
 

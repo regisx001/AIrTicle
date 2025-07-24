@@ -6,9 +6,11 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.stringtemplate.v4.compiler.CodeGenerator.primary_return;
 
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
+import com.regisx001.validationsystem.services.AIApproveService;
 import com.regisx001.validationsystem.services.ArticleService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
+    private final AIApproveService aiApproveService;
 
     @Override
     public Article createArticle(Article article) {
@@ -31,10 +34,9 @@ public class ArticleServiceImpl implements ArticleService {
             throw new IllegalArgumentException("Article content cannot be null or empty");
         }
 
-        // Ensure the article doesn't have an ID (for new articles)
-        article.setId(null);
-
         Article savedArticle = articleRepository.save(article);
+
+        aiApproveService.analyseArticle(savedArticle);
         return savedArticle;
     }
 

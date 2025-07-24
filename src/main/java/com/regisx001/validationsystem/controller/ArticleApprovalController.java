@@ -1,9 +1,8 @@
 package com.regisx001.validationsystem.controller;
 
 import com.regisx001.validationsystem.domain.entities.Article;
-import com.regisx001.validationsystem.repositories.ArticleRepository;
-import com.regisx001.validationsystem.services.ApproveAIService;
 import com.regisx001.validationsystem.services.ArticleService;
+import com.regisx001.validationsystem.services.legacy.ApproveAIService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/articles")
+
 @RequiredArgsConstructor
 public class ArticleApprovalController {
 
@@ -28,8 +28,9 @@ public class ArticleApprovalController {
     }
 
     @PostMapping
-    public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-        return ResponseEntity.ok(articleService.createArticle(article));
+    public ResponseEntity<?> createArticle(@RequestBody Article article) {
+        Article ar = articleService.createArticle(article);
+        return ResponseEntity.ok(ar);
     }
 
     @PostMapping("/{id}/review")
@@ -39,6 +40,11 @@ public class ArticleApprovalController {
 
     @GetMapping("/review-llm")
     public ResponseEntity<?> getReviewLLM() {
+        return ResponseEntity.ok(approveAIService.getUsedLLM());
+    }
+
+    @GetMapping("/review")
+    public ResponseEntity<?> getArticleLatestReview() {
         return ResponseEntity.ok(approveAIService.getUsedLLM());
     }
 

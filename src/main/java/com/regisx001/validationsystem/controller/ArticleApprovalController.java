@@ -3,6 +3,7 @@ package com.regisx001.validationsystem.controller;
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
 import com.regisx001.validationsystem.services.ApproveAIService;
+import com.regisx001.validationsystem.services.ArticleService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,17 +18,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ArticleApprovalController {
 
-    private final ArticleRepository articleRepository;
+    // private final ArticleRepository articleRepository;
+    private final ArticleService articleService;
     private final ApproveAIService approveAIService;
 
     @GetMapping
     public ResponseEntity<?> getAllArticles(Pageable pageable) {
-        return ResponseEntity.ok(articleRepository.findAll(pageable));
+        return ResponseEntity.ok(articleService.getAllArticles(pageable));
     }
 
     @PostMapping
     public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-        return ResponseEntity.ok(articleRepository.save(article));
+        return ResponseEntity.ok(articleService.createArticle(article));
     }
 
     @PostMapping("/{id}/review")

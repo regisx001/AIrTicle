@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.regisx001.validationsystem.domain.enums.ApprovalDecision;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,13 +18,15 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApprovalResult {
+public class AnalyseResult {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID articleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id", nullable = false)
+    @JsonIgnore
+    private Article article;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,11 +37,6 @@ public class ApprovalResult {
 
     @Column(columnDefinition = "TEXT")
     private String aiAnalysis;
-
-    @ElementCollection
-    @CollectionTable(name = "flagged_issues", joinColumns = @JoinColumn(name = "approval_result_id"))
-    @Column(name = "issue")
-    private List<String> flaggedIssues;
 
     @Column(columnDefinition = "TEXT")
     private String recommendations;

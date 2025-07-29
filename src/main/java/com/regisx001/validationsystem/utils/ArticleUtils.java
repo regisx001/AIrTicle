@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.regisx001.validationsystem.config.AIAnalysisConfig;
 import com.regisx001.validationsystem.config.AIPromptTemplates;
 import com.regisx001.validationsystem.domain.dtos.AIAnalysisResponse;
-import com.regisx001.validationsystem.domain.entities.ApprovalResult;
+import com.regisx001.validationsystem.domain.entities.AnalyseResult;
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.domain.enums.ApprovalDecision;
 
@@ -62,7 +62,7 @@ public class ArticleUtils {
         }
     }
 
-    public ApprovalResult buildApprovalResult(Article article, AIAnalysisResponse response, Integer processingTimeMs) {
+    public AnalyseResult buildApprovalResult(Article article, AIAnalysisResponse response, Integer processingTimeMs) {
         ApprovalDecision decision = determineDecision(response);
 
         // Get feedback from root level or combine nested feedback
@@ -89,8 +89,8 @@ public class ArticleUtils {
             recommendationsStr = String.join("; ", response.getRecommendations());
         }
 
-        return ApprovalResult.builder()
-                .articleId(article.getId())
+        return AnalyseResult.builder()
+                .article(article)
                 .decision(decision)
                 .confidenceScore(response.getOverallScore())
                 .aiAnalysis(aiAnalysis)

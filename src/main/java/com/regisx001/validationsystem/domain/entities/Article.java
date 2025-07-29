@@ -1,17 +1,21 @@
 package com.regisx001.validationsystem.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -64,6 +68,12 @@ public class Article {
 
     private LocalDateTime approvedAt;
     private String approvedBy;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AnalyseResult> analyseResults;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ApprovalHistory> approvalHistory;
 
     @PrePersist
     public void onCreate() {

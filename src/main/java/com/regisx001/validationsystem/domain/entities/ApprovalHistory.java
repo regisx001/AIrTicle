@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.regisx001.validationsystem.domain.enums.ApprovalAction;
 import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 
@@ -22,8 +24,10 @@ public class ApprovalHistory {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID articleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id", nullable = false)
+    @JsonIgnore
+    private Article article;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

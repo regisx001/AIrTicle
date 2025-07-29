@@ -10,14 +10,14 @@ import com.regisx001.validationsystem.domain.entities.AnalyseResult;
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.repositories.AnalyseResultRepository;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
-import com.regisx001.validationsystem.services.AIApproveService;
+import com.regisx001.validationsystem.services.AIAnalyseService;
 import com.regisx001.validationsystem.utils.ArticleUtils;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AIApproveServiceImpl implements AIApproveService {
+public class AIAnalyseServiceImpl implements AIAnalyseService {
 
     private final ArticleUtils utils;
     private final AnalyseResultRepository analyseResultRepository;

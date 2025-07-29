@@ -1,7 +1,7 @@
 package com.regisx001.validationsystem.controller;
 
 import com.regisx001.validationsystem.domain.entities.Article;
-import com.regisx001.validationsystem.services.AIApproveService;
+import com.regisx001.validationsystem.services.AIAnalyseService;
 import com.regisx001.validationsystem.services.ArticleService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class ArticleApprovalController {
 
     // private final ArticleRepository articleRepository;
     private final ArticleService articleService;
-    private final AIApproveService aiApproveService;
+    private final AIAnalyseService aiAnalyseService;
 
     @GetMapping
     public ResponseEntity<?> getAllArticles(Pageable pageable) {
@@ -35,7 +35,7 @@ public class ArticleApprovalController {
 
     @PostMapping("/{id}/review")
     public ResponseEntity<?> submitForReview(@PathVariable UUID id) {
-        return ResponseEntity.ok(aiApproveService.analyseArticleManual(id));
+        return ResponseEntity.ok(aiAnalyseService.analyseArticleManual(id));
     }
 
     // @GetMapping("/review-llm")
@@ -45,7 +45,7 @@ public class ArticleApprovalController {
 
     @GetMapping("{id}/review")
     public ResponseEntity<?> getArticleLatestReview(@PathVariable UUID id) {
-        return ResponseEntity.ok(aiApproveService.getLatestApprovalResult(id));
+        return ResponseEntity.ok(aiAnalyseService.getLatestApprovalResult(id));
     }
 
 }

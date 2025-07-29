@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.regisx001.validationsystem.domain.entities.AnalyseResult;
 import com.regisx001.validationsystem.domain.entities.Article;
 
-public interface AIApproveService {
+public interface AIAnalyseService {
     void analyseArticle(Article article);
 
     AnalyseResult analyseArticleManual(UUID id);

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
-import com.regisx001.validationsystem.services.AIApproveService;
+import com.regisx001.validationsystem.services.AIAnalyseService;
 import com.regisx001.validationsystem.services.ArticleService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final AIApproveService aiApproveService;
+    private final AIAnalyseService aiAnalyseService;
 
     @Override
     public Article createArticle(Article article) {
@@ -36,7 +36,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article savedArticle = articleRepository.save(article);
 
-        aiApproveService.analyseArticle(savedArticle);
+        aiAnalyseService.analyseArticle(savedArticle);
         return savedArticle;
     }
 

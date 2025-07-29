@@ -1,7 +1,7 @@
 package com.regisx001.validationsystem.repositories;
 
 import com.regisx001.validationsystem.domain.entities.AnalyseResult;
-import com.regisx001.validationsystem.domain.enums.ApprovalDecision;
+import com.regisx001.validationsystem.domain.enums.AnalyseDecision;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,7 +16,7 @@ public interface AnalyseResultRepository extends JpaRepository<AnalyseResult, UU
 
     Optional<AnalyseResult> findByArticleId(UUID articleId);
 
-    List<AnalyseResult> findByDecision(ApprovalDecision decision);
+    List<AnalyseResult> findByDecision(AnalyseDecision decision);
 
     @Query("SELECT AVG(ar.confidenceScore) FROM AnalyseResult ar WHERE ar.analyzedAt >= ?1")
     Double getAverageConfidenceScore(LocalDateTime since);

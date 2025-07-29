@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.regisx001.validationsystem.domain.entities.AnalyseResult;
 import com.regisx001.validationsystem.domain.entities.Article;
+import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 import com.regisx001.validationsystem.repositories.AnalyseResultRepository;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
 import com.regisx001.validationsystem.services.AIAnalyseService;
@@ -38,6 +39,8 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
         Integer analyzeTimeMs = (int) (endTime - startTime);
 
         AnalyseResult result = utils.buildApprovalResult(article, utils.parseAIResponse(aiResponse), analyzeTimeMs);
+        // article.setStatus(ArticleStatus.valueOf(result.getDecision().toString()));
+        // if(result.getDecision().equals(a)){}
         analyseResultRepository.save(result);
         // return result;
     }

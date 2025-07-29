@@ -1,6 +1,6 @@
 package com.regisx001.validationsystem.domain.enums;
 
-public enum ApprovalAction {
+public enum AnalyseAction {
     SUBMITTED,
     AI_ANALYSIS_STARTED,
     AI_ANALYSIS_COMPLETED,

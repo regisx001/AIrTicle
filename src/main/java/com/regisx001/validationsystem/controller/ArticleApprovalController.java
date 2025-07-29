@@ -27,6 +27,11 @@ public class ArticleApprovalController {
         return ResponseEntity.ok(articleService.getAllArticles(pageable));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getArticle(@PathVariable UUID id) {
+        return ResponseEntity.ok(articleService.getArticleById(id));
+    }
+
     @PostMapping
     public ResponseEntity<?> createArticle(@RequestBody Article article) {
         Article ar = articleService.createArticle(article);

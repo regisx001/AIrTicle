@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.regisx001.validationsystem.domain.enums.ApprovalDecision;
+import com.regisx001.validationsystem.domain.enums.AnalyseDecision;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class AnalyseResult {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApprovalDecision decision;
+    private AnalyseDecision decision;
 
     @Column(nullable = false)
     private Double confidenceScore;

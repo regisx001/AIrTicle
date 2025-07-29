@@ -11,7 +11,7 @@ import com.regisx001.validationsystem.config.AIPromptTemplates;
 import com.regisx001.validationsystem.domain.dtos.AIAnalysisResponse;
 import com.regisx001.validationsystem.domain.entities.AnalyseResult;
 import com.regisx001.validationsystem.domain.entities.Article;
-import com.regisx001.validationsystem.domain.enums.ApprovalDecision;
+import com.regisx001.validationsystem.domain.enums.AnalyseDecision;
 
 import lombok.RequiredArgsConstructor;
 
@@ -51,20 +51,20 @@ public class ArticleUtils {
         }
     }
 
-    public ApprovalDecision determineDecision(AIAnalysisResponse response) {
+    public AnalyseDecision determineDecision(AIAnalysisResponse response) {
         double score = response.getOverallScore();
 
         if (score >= config.getAutoApprovalThreshold()) {
-            return ApprovalDecision.APPROVED;
+            return AnalyseDecision.APPROVED;
         } else if (score <= config.getAutoRejectionThreshold()) {
-            return ApprovalDecision.REJECTED;
+            return AnalyseDecision.REJECTED;
         } else {
-            return ApprovalDecision.REQUIRES_MANUAL_REVIEW;
+            return AnalyseDecision.REQUIRES_MANUAL_REVIEW;
         }
     }
 
     public AnalyseResult buildApprovalResult(Article article, AIAnalysisResponse response, Integer processingTimeMs) {
-        ApprovalDecision decision = determineDecision(response);
+        AnalyseDecision decision = determineDecision(response);
 
         // Get feedback from root level or combine nested feedback
         String aiAnalysis = response.getFeedback();

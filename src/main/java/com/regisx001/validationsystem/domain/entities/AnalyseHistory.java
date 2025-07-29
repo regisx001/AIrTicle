@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.regisx001.validationsystem.domain.enums.ApprovalAction;
+import com.regisx001.validationsystem.domain.enums.AnalyseAction;
 import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class AnalyseHistory {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApprovalAction action;
+    private AnalyseAction action;
 
     @Enumerated(EnumType.STRING)
     private ArticleStatus fromStatus;

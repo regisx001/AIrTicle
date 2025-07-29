@@ -1,5 +1,6 @@
 package com.regisx001.validationsystem.utils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -100,6 +101,7 @@ public class ArticleUtils {
                 .seoScore(response.getSeo() != null ? response.getSeo().getScore() : null)
                 .aiModel(model)
                 .processingTimeMs(processingTimeMs)
+                .analyzedAt(LocalDateTime.now())
                 .build();
     }
 }

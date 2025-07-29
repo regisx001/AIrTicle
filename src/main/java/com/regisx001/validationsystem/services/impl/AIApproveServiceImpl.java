@@ -63,7 +63,7 @@ public class AIApproveServiceImpl implements AIApproveService {
         Integer analyzeTimeMs = (int) (endTime - startTime);
 
         AnalyseResult result = utils.buildApprovalResult(article, utils.parseAIResponse(aiResponse), analyzeTimeMs);
-        return result;
+        return analyseResultRepository.save(result);
     }
 
 }

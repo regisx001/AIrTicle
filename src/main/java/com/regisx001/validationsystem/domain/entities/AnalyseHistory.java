@@ -15,11 +15,11 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "approval_history")
+@Table(name = "analyse_histories")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApprovalHistory {
+public class AnalyseHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "approval_results")
+@Table(name = "analyse_results")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

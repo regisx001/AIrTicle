@@ -73,7 +73,7 @@ public class Article {
     private List<AnalyseResult> analyseResults;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ApprovalHistory> approvalHistory;
+    private List<AnalyseHistory> analyseHistories;
 
     @PrePersist
     public void onCreate() {

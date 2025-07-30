@@ -35,29 +35,79 @@ AIrTicle is a sophisticated AI-powered article validation and approval system bu
 
 ## 🏗️ Architecture Overview
 
+### System Architecture
+
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   REST Client   │────│   Controller     │────│    Service      │
+│   SvelteKit     │────│   Spring Boot    │────│   PostgreSQL    │
+│   Frontend      │    │   REST API       │    │   Database      │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-                              │                          │
-                              │                          ▼
+         │                        │                        │
+         │                        │                        │
+         ▼                        ▼                        ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend/UI   │<---│   JSON Response  │    │   AI Analysis   │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                         │
-                                                         ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   PostgreSQL    │────│   JPA/Hibernate  │────│   LLM Provider  │
+│   User Actions  │────│   AI Analysis    │────│   Data Storage  │
+│   & Interface   │    │   Processing     │    │   & Retrieval   │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
+### Frontend Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        SvelteKit Frontend                       │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
+│  │     Routes      │  │   Components    │  │    Services     │  │
+│  │                 │  │                 │  │                 │  │
+│  │ • Dashboard     │  │ • UI Library    │  │ • API Client    │  │
+│  │ • Articles      │  │ • Status Badge  │  │ • Type Safety   │  │
+│  │ • Article Form  │  │ • Header/Nav    │  │ • Error Handler │  │
+│  │ • Article View  │  │ • Cards/Buttons │  │ • Formatters    │  │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
+│  │ Server Actions  │  │ Server Loading  │  │  State Mgmt     │  │
+│  │                 │  │                 │  │                 │  │
+│  │ • Form Submit   │  │ • SSR Data      │  │ • Svelte Runes  │  │
+│  │ • AI Analysis   │  │ • API Fetching  │  │ • Reactive UI   │  │
+│  │ • CRUD Ops      │  │ • Type Safety   │  │ • Client State  │  │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
+├─────────────────────────────────────────────────────────────────┤
+│                    Spring Boot REST API                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Key Frontend Features
+
+- **Server-Side Rendering (SSR)**: Fast initial page loads with SEO optimization
+- **Server Actions**: Type-safe form handling without JavaScript required
+- **Svelte 5 Runes**: Modern reactive state management (`$state`, `$derived`, `$effect`)
+- **Progressive Enhancement**: Works without JavaScript, enhanced with it
+- **Type Safety**: End-to-end TypeScript with shared type definitions
+- **Component Library**: Reusable UI components with consistent styling
+- **Responsive Design**: Mobile-first design with TailwindCSS
+- **Dark Mode**: Automatic theme switching with system preference detection
+
 ## 🔧 Technologies Used
+
+### Backend Stack
 
 - **Backend**: Java 21, Spring Boot 3.5.3
 - **AI Integration**: Spring AI 1.0.0 (OpenAI/Groq compatible)
 - **Database**: PostgreSQL with Spring Data JPA
 - **Build Tool**: Maven
 - **Additional**: Lombok, Jackson, Hibernate
+
+### Frontend Stack
+
+- **Framework**: SvelteKit 5 with Svelte 5 Runes
+- **Language**: TypeScript
+- **Styling**: TailwindCSS 4
+- **UI Components**: shadcn-svelte, bits-ui
+- **Icons**: Lucide Svelte
+- **Build Tool**: Vite
+- **Package Manager**: pnpm
 
 ## 📊 Database Schema
 
@@ -153,6 +203,8 @@ graph TD
 
 ### 🔧 Installation & Setup
 
+#### Backend Setup
+
 1. **Clone the repository**
 
    ```bash
@@ -187,15 +239,380 @@ graph TD
        password: admin123
    ```
 
-5. **Build and Run**
+5. **Build and Run Backend**
    ```bash
    mvn clean install
    mvn spring-boot:run
    ```
 
-The application will start on `http://localhost:8080`
+#### Frontend Setup
+
+1. **Navigate to frontend directory**
+
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Configure environment variables**
+   Create `.env` file:
+
+   ```bash
+   PUBLIC_API_URL=http://localhost:8080/api
+   ```
+
+4. **Start development server**
+
+   ```bash
+   pnpm dev
+   ```
+
+#### Quick Start (Both Services)
+
+Use the provided automation script:
+
+```bash
+chmod +x start-dev.sh
+./start-dev.sh
+```
+
+This script will:
+
+- Start the Spring Boot backend on `http://localhost:8080`
+- Start the SvelteKit frontend on `http://localhost:5173`
+- Open both in separate terminal tabs for easy monitoring
+
+**Application URLs:**
+
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8080`
+- API Documentation: `http://localhost:8080/swagger-ui.html` (if enabled)
+
+## �️ Frontend Interface & Screenshots
+
+### 🏠 **Dashboard Page**
+
+_Main landing page with article overview and statistics_
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  AIrTicle                                    [🌙] [Create Article] │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  📊 Dashboard Overview                                          │
+│                                                                 │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   Total     │ │  Approved   │ │  Pending    │ │  Rejected   │ │
+│  │ Articles    │ │  Articles   │ │  Review     │ │  Articles   │ │
+│  │    125      │ │     89      │ │     23      │ │     13      │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  📝 Recent Articles                              [View All] →   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ [✅] The Future of AI in Content Creation     July 30, 2025 │ │
+│  │      Content quality analysis with high confidence...       │ │
+│  │      👤 regisx001 • 📊 Score: 9.2/10 • 🏷️ AI_APPROVED      │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ [⏳] Machine Learning Best Practices         July 29, 2025 │ │
+│  │      AI analysis in progress for quality review...          │ │
+│  │      👤 johndoe • 🤖 UNDER_AI_REVIEW                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+
+- **Statistics Overview**: Quick metrics on article status distribution
+- **Recent Articles**: Latest submissions with status indicators
+- **Status Badges**: Color-coded visual indicators for article states
+- **Quick Actions**: Direct navigation to article management and creation
+
+---
+
+### 📑 **Articles Management Page**
+
+_Complete article listing with search, filter, and pagination_
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Back to Dashboard                          [Create Article]   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  �📚 Articles Management                                         │
+│                                                                 │
+│  🔍 [Search articles...                    ] [🔽 All Statuses] │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ [✅] Advanced React Patterns                              │ │
+│  │      A comprehensive guide to advanced React patterns...   │ │
+│  │      ────────────────────────────────────────────────────── │ │
+│  │      📊 Score: 8.9/10 • 📅 July 30, 2025 • 👤 regisx001   │ │
+│  │      🏷️ APPROVED • 📄 1,247 words                         │ │
+│  │                                          [View] [Edit]     │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ [⚠️] Content Strategy for 2025                            │ │
+│  │      Modern approaches to content marketing and...         │ │
+│  │      ────────────────────────────────────────────────────── │ │
+│  │      📊 Score: 6.2/10 • 📅 July 29, 2025 • 👤 sarah_w     │ │
+│  │      🏷️ MANUAL_REVIEW_REQUIRED • 📄 892 words             │ │
+│  │                                          [View] [Edit]     │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ [❌] Outdated SEO Techniques                               │ │
+│  │      Discussion of SEO methods that are no longer...       │ │
+│  │      ────────────────────────────────────────────────────── │ │
+│  │      📊 Score: 3.1/10 • 📅 July 28, 2025 • 👤 mike_123    │ │
+│  │      🏷️ AI_REJECTED • 📄 534 words                        │ │
+│  │                                          [View] [Edit]     │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ← Previous   Page 1 of 8   Next →                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+
+- **Search & Filter**: Real-time search with status filtering
+- **Article Cards**: Rich preview with metadata and actions
+- **Pagination**: Efficient navigation through large article sets
+- **Status Indicators**: Visual status badges with score information
+- **Quick Actions**: Direct access to view and edit functionality
+
+---
+
+### ✍️ **Article Creation Page**
+
+_Comprehensive article creation form with live preview and AI analysis_
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Back to Articles                                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ✏️ Create New Article                                          │
+│  Write your article and let AI analyze its quality, grammar,    │
+│  and SEO optimization                                           │
+│                                                                 │
+│  ┌─────────────────────────────┐  ┌─────────────────────────────┐ │
+│  │ Article Title *             │  │ Featured Image URL          │ │
+│  │ [The Future of AI in Con... ]  │ [https://example.com/...  ] │ │
+│  │                             │  │                             │ │
+│  │ Article Content *           │  │ ┌─────────────────────────┐ │ │
+│  │ ┌─────────────────────────┐ │  │ │                         │ │ │
+│  │ │ Artificial intelligence │ │  │ │    [Featured Image      │ │ │
+│  │ │ is revolutionizing how  │ │  │ │     Preview]            │ │ │
+│  │ │ we create, review, and  │ │  │ │                         │ │ │
+│  │ │ optimize content...     │ │  │ └─────────────────────────┘ │ │
+│  │ │                         │ │  │                             │ │
+│  │ │ [Continue writing...]   │ │  │ 🤖 AI Analysis             │ │
+│  │ │                         │ │  │ ✓ Content Quality & Struct  │ │
+│  │ │                         │ │  │ ✓ Grammar & Readability     │ │
+│  │ │                         │ │  │ ✓ SEO Optimization          │ │
+│  │ │                         │ │  │ ✓ Originality Assessment    │ │
+│  │ │                      [👁️ Preview] │                         │ │
+│  │ └─────────────────────────┘ │  │ Analysis starts automatically│ │
+│  │ 247 words                   │  │ after submission            │ │
+│  │                             │  │                             │ │
+│  └─────────────────────────────┘  │ 💡 Writing Tips             │ │
+│                                    │ • Use clear headings        │ │
+│  ────────────────────────────────  │ • Write in active voice     │ │
+│  ✅ Ready to submit for AI analysis │ • Include keywords naturally│ │
+│                                    │ • Keep paragraphs concise   │ │
+│                      [💾 Create & Analyze Article] │ • Proofread before submit │ │
+│                                    └─────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+
+- **Real-time Validation**: Live word count and form validation
+- **Preview Mode**: Toggle between edit and preview views
+- **AI Analysis Preview**: Information about what will be analyzed
+- **Writing Guidelines**: Helpful tips for better content creation
+- **Image Preview**: Live preview of featured images
+- **Form State Management**: Preserves content during navigation
+
+---
+
+### 👁️ **Article Detail View**
+
+_Comprehensive article view with AI analysis results and history_
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Back to Articles                                    [Edit]    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  🎯 The Future of AI in Content Creation          [✅ APPROVED] │
+│  Published on July 30, 2025 by regisx001                       │
+│                                                                 │
+│  ┌─────────────────────────────┐  ┌─────────────────────────────┐ │
+│  │                             │  │ 📊 AI Analysis Results      │ │
+│  │  [Featured Image]           │  │                             │ │
+│  │                             │  │ Overall Score: 9.2/10       │ │
+│  │                             │  │ Confidence: 92%             │ │
+│  │                             │  │                             │ │
+│  │ Artificial intelligence is  │  │ ┌─────────────────────────┐ │ │
+│  │ revolutionizing how we      │  │ │ 📝 Content Quality: 9.1 │ │ │
+│  │ create, review, and optimize│  │ │ ✏️ Grammar Score: 9.5    │ │ │
+│  │ content. In this comprehensive│ │ │ 🔍 SEO Score: 8.8       │ │ │
+│  │ guide, we'll explore the    │  │ │ 🎯 Originality: 9.0     │ │ │
+│  │ latest developments in AI   │  │ └─────────────────────────┘ │ │
+│  │ content creation and how    │  │                             │ │
+│  │ it's transforming the       │  │ 💡 AI Recommendations       │ │
+│  │ digital landscape...        │  │                             │ │
+│  │                             │  │ "Excellent article structure│ │
+│  │ [Full article content       │  │ with clear headings and     │ │
+│  │  continues...]              │  │ engaging content. Consider  │ │
+│  │                             │  │ adding more specific        │ │
+│  │                             │  │ examples in section 3..."   │ │
+│  │                             │  │                             │ │
+│  │                             │  │ 📅 Analysis Details         │ │
+│  │                             │  │ • Model: llama3-8b-8192     │ │
+│  │                             │  │ • Processing: 2.34s         │ │
+│  │                             │  │ • Analyzed: July 30, 2025   │ │
+│  │                             │  │                             │ │
+│  │ Word Count: 1,247 words     │  │ 📚 Analysis History         │ │
+│  │ Reading Time: ~5 minutes    │  │                             │ │
+│  │                             │  │ ● DRAFT → APPROVED          │ │
+│  │                             │  │   "Article meets all quality│ │
+│  │                             │  │   standards..."             │ │
+│  │                             │  │   July 30, 2025 by AI      │ │
+│  │                             │  │                             │ │
+│  └─────────────────────────────┘  └─────────────────────────────┘ │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+
+- **Full Article Display**: Clean, readable article presentation
+- **AI Analysis Results**: Detailed scoring breakdown and recommendations
+- **Analysis History**: Complete audit trail of status changes
+- **Metadata Display**: Article statistics and publication information
+- **Action Buttons**: Easy access to editing and navigation
+- **Responsive Layout**: Optimized for both desktop and mobile viewing
+
+---
+
+### 🎨 **Design System & Components**
+
+#### Status Indicators
+
+- **🟢 APPROVED**: Green badge with checkmark
+- **🟡 PENDING/UNDER_REVIEW**: Yellow badge with clock icon
+- **🟠 MANUAL_REVIEW_REQUIRED**: Orange badge with warning icon
+- **🔴 REJECTED**: Red badge with X icon
+- **⚪ DRAFT**: Gray badge with pencil icon
+
+#### Theme Support
+
+- **🌞 Light Mode**: Clean, professional white interface
+- **🌙 Dark Mode**: Easy-on-eyes dark interface with proper contrast
+- **🔄 System Sync**: Automatic theme switching based on OS preference
+
+#### Interactive Elements
+
+- **Hover Effects**: Subtle animations and state changes
+- **Loading States**: Spinner animations during async operations
+- **Form Validation**: Real-time feedback with visual indicators
+- **Responsive Design**: Seamless experience across all device sizes
 
 ## 📚 API Documentation
+
+### Frontend API Integration
+
+The SvelteKit frontend integrates seamlessly with the Spring Boot backend through:
+
+#### Type-Safe API Client (`lib/api.ts`)
+
+```typescript
+// Centralized API client with error handling
+export const api = {
+  async getArticles(params?: ArticleParams): Promise<PageResponse<Article>> {
+    const url = new URL(`${API_BASE_URL}/articles`);
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) url.searchParams.set(key, value.toString());
+      });
+    }
+
+    const response = await fetch(url.toString());
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  },
+
+  async createArticle(article: CreateArticleRequest): Promise<Article> {
+    const response = await fetch(`${API_BASE_URL}/articles`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(article),
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  },
+  // ... more methods
+};
+```
+
+#### Server Actions (Form Handling)
+
+```typescript
+// Type-safe server actions for form processing
+export const actions: Actions = {
+  create: async ({ request }) => {
+    const data = await request.formData();
+    const article = {
+      title: data.get("title") as string,
+      content: data.get("content") as string,
+      featuredImage: data.get("featuredImage") as string,
+    };
+
+    try {
+      const result = await api.createArticle(article);
+      throw redirect(302, `/articles/${result.id}`);
+    } catch (error) {
+      return fail(400, { error: "Failed to create article" });
+    }
+  },
+};
+```
+
+#### Server-Side Data Loading
+
+```typescript
+// SSR data loading with type safety
+export const load: PageServerLoad = async ({ params, url }) => {
+  const page = parseInt(url.searchParams.get("page") || "0");
+  const size = parseInt(url.searchParams.get("size") || "10");
+
+  try {
+    const [articles, analysis, history] = await Promise.all([
+      api.getArticles({ page, size }),
+      api.getAnalysisResult(params.id),
+      api.getAnalysisHistory(params.id),
+    ]);
+
+    return { articles, analysis, history };
+  } catch (error) {
+    throw error(404, "Article not found");
+  }
+};
+```
 
 ### 📝 **Article Management**
 

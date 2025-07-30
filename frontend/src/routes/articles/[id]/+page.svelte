@@ -20,6 +20,7 @@
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import HistoryIcon from '@lucide/svelte/icons/history';
 	import BarChart3Icon from '@lucide/svelte/icons/bar-chart-3';
+	import MessageSquareIcon from '@lucide/svelte/icons/message-square';
 
 	let { data, form } = $props();
 
@@ -122,7 +123,10 @@
 		<div
 			class="bg-destructive/10 border-destructive/20 text-destructive rounded-md border px-4 py-3"
 		>
-			<p class="font-medium">❌ {form.error}</p>
+			<div class="flex items-center gap-2">
+				<XCircleIcon class="h-5 w-5" />
+				<p class="font-medium">{form.error}</p>
+			</div>
 		</div>
 	{/if}
 
@@ -146,7 +150,10 @@
 			<!-- Feedback -->
 			{#if article.feedback}
 				<div class="bg-muted/50 rounded-lg p-4">
-					<h3 class="mb-2 font-semibold">💬 AI Feedback</h3>
+					<div class="mb-2 flex items-center gap-2">
+						<MessageSquareIcon class="h-5 w-5" />
+						<h3 class="font-semibold">AI Feedback</h3>
+					</div>
 					<p class="text-muted-foreground whitespace-pre-wrap">{article.feedback}</p>
 				</div>
 			{/if}

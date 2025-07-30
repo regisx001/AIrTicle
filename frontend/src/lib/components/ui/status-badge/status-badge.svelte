@@ -6,10 +6,10 @@
 	let { status }: { status: ArticleStatus } = $props();
 
 	const colorClass = $derived(getStatusColor(status));
-	const icon = $derived(getStatusIcon(status));
+	const IconComponent = $derived(getStatusIcon(status));
 </script>
 
-<Badge class={`inline-flex items-center gap-1 ${colorClass} border`}>
-	<span class="text-xs">{icon}</span>
+<Badge class={`inline-flex items-center gap-1.5 ${colorClass} border`}>
+	<IconComponent class="h-3 w-3" />
 	<span class="text-xs font-medium">{status.replace(/_/g, ' ')}</span>
 </Badge>

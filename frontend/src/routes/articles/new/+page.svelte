@@ -7,6 +7,10 @@
 	import ArrowLeftIcon from '@lucide/svelte/icons/arrow-left';
 	import SaveIcon from '@lucide/svelte/icons/save';
 	import EyeIcon from '@lucide/svelte/icons/eye';
+	import XCircleIcon from '@lucide/svelte/icons/x-circle';
+	import BotIcon from '@lucide/svelte/icons/bot';
+	import AlertTriangleIcon from '@lucide/svelte/icons/alert-triangle';
+	import CheckIcon from '@lucide/svelte/icons/check';
 
 	let { form } = $props();
 
@@ -51,7 +55,10 @@
 		<div
 			class="bg-destructive/10 border-destructive/20 text-destructive rounded-md border px-4 py-3"
 		>
-			<p class="font-medium">❌ {form.error}</p>
+			<div class="flex items-center gap-2">
+				<XCircleIcon class="h-5 w-5" />
+				<p class="font-medium">{form.error}</p>
+			</div>
 		</div>
 	{/if}
 
@@ -166,12 +173,27 @@
 
 				<!-- Analysis Info -->
 				<div class="bg-muted/50 space-y-3 rounded-md p-4">
-					<h3 class="text-sm font-medium">🤖 AI Analysis</h3>
+					<div class="flex items-center gap-2">
+						<BotIcon class="h-4 w-4" />
+						<h3 class="text-sm font-medium">AI Analysis</h3>
+					</div>
 					<div class="text-muted-foreground space-y-2 text-xs">
-						<p>✓ Content Quality & Structure</p>
-						<p>✓ Grammar & Readability</p>
-						<p>✓ SEO Optimization</p>
-						<p>✓ Originality Assessment</p>
+						<div class="flex items-center gap-1.5">
+							<CheckIcon class="h-3 w-3 text-green-600" />
+							<p>Content Quality & Structure</p>
+						</div>
+						<div class="flex items-center gap-1.5">
+							<CheckIcon class="h-3 w-3 text-green-600" />
+							<p>Grammar & Readability</p>
+						</div>
+						<div class="flex items-center gap-1.5">
+							<CheckIcon class="h-3 w-3 text-green-600" />
+							<p>SEO Optimization</p>
+						</div>
+						<div class="flex items-center gap-1.5">
+							<CheckIcon class="h-3 w-3 text-green-600" />
+							<p>Originality Assessment</p>
+						</div>
 					</div>
 					<p class="text-muted-foreground text-xs">
 						Analysis starts automatically after submission and typically completes within 2-5
@@ -195,13 +217,17 @@
 
 		<!-- Submit Button -->
 		<div class="flex items-center justify-between border-t pt-6">
-			<div class="text-muted-foreground text-sm">
+			<div class="text-muted-foreground flex items-center gap-2 text-sm">
 				{#if isValid}
-					✓ Ready to submit for AI analysis
+					<EyeIcon class="h-4 w-4 text-green-600" />
+					<span>Ready to submit for AI analysis</span>
 				{:else}
-					⚠️ Please complete all required fields ({currentWordCount < 50
-						? 'minimum 50 words needed'
-						: ''})
+					<AlertTriangleIcon class="h-4 w-4 text-yellow-600" />
+					<span
+						>Please complete all required fields ({currentWordCount < 50
+							? 'minimum 50 words needed'
+							: ''})</span
+					>
 				{/if}
 			</div>
 

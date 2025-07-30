@@ -1,4 +1,13 @@
 import type { ArticleStatus } from '$lib/types';
+import EditIcon from '@lucide/svelte/icons/edit';
+import SendIcon from '@lucide/svelte/icons/send';
+import BotIcon from '@lucide/svelte/icons/bot';
+import CheckCircleIcon from '@lucide/svelte/icons/check-circle';
+import XCircleIcon from '@lucide/svelte/icons/x-circle';
+import UserIcon from '@lucide/svelte/icons/user';
+import GlobeIcon from '@lucide/svelte/icons/globe';
+import ArchiveIcon from '@lucide/svelte/icons/archive';
+import HelpCircleIcon from '@lucide/svelte/icons/help-circle';
 
 export function getStatusColor(status: ArticleStatus): string {
 	switch (status) {
@@ -25,28 +34,28 @@ export function getStatusColor(status: ArticleStatus): string {
 	}
 }
 
-export function getStatusIcon(status: ArticleStatus): string {
+export function getStatusIcon(status: ArticleStatus): typeof EditIcon {
 	switch (status) {
 		case 'DRAFT':
-			return '📝';
+			return EditIcon;
 		case 'SUBMITTED_FOR_APPROVAL':
-			return '📤';
+			return SendIcon;
 		case 'UNDER_AI_REVIEW':
-			return '🤖';
+			return BotIcon;
 		case 'AI_APPROVED':
 		case 'APPROVED':
-			return '✅';
+			return CheckCircleIcon;
 		case 'AI_REJECTED':
 		case 'REJECTED':
-			return '❌';
+			return XCircleIcon;
 		case 'MANUAL_REVIEW_REQUIRED':
-			return '👤';
+			return UserIcon;
 		case 'PUBLISHED':
-			return '🌐';
+			return GlobeIcon;
 		case 'ARCHIVED':
-			return '📦';
+			return ArchiveIcon;
 		default:
-			return '❓';
+			return HelpCircleIcon;
 	}
 }
 

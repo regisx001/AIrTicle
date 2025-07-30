@@ -10,6 +10,7 @@
 	import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import ClockIcon from '@lucide/svelte/icons/clock';
 	import CheckCircleIcon from '@lucide/svelte/icons/check-circle';
+	import AlertTriangleIcon from '@lucide/svelte/icons/alert-triangle';
 
 	// State using Svelte 5 runes
 	let articles = $state<Article[]>([]);
@@ -85,45 +86,6 @@
 		</div>
 	</div>
 
-	<!-- Stats Grid -->
-	<div class="grid grid-cols-1 gap-6 md:grid-cols-4">
-		<div class="bg-card rounded-lg border p-6">
-			<div class="flex items-center space-x-2">
-				<FileTextIcon class="h-5 w-5 text-blue-500" />
-				<h3 class="font-semibold">Total Articles</h3>
-			</div>
-			<p class="mt-2 text-3xl font-bold">{stats.total}</p>
-			<p class="text-muted-foreground text-sm">All time</p>
-		</div>
-
-		<div class="bg-card rounded-lg border p-6">
-			<div class="flex items-center space-x-2">
-				<CheckCircleIcon class="h-5 w-5 text-green-500" />
-				<h3 class="font-semibold">Approved</h3>
-			</div>
-			<p class="mt-2 text-3xl font-bold">{stats.approved}</p>
-			<p class="text-muted-foreground text-sm">Ready to publish</p>
-		</div>
-
-		<div class="bg-card rounded-lg border p-6">
-			<div class="flex items-center space-x-2">
-				<ClockIcon class="h-5 w-5 text-yellow-500" />
-				<h3 class="font-semibold">Under Review</h3>
-			</div>
-			<p class="mt-2 text-3xl font-bold">{stats.underReview}</p>
-			<p class="text-muted-foreground text-sm">Being analyzed</p>
-		</div>
-
-		<div class="bg-card rounded-lg border p-6">
-			<div class="flex items-center space-x-2">
-				<TrendingUpIcon class="h-5 w-5 text-emerald-500" />
-				<h3 class="font-semibold">Published</h3>
-			</div>
-			<p class="mt-2 text-3xl font-bold">{stats.published}</p>
-			<p class="text-muted-foreground text-sm">Live articles</p>
-		</div>
-	</div>
-
 	<!-- Recent Articles -->
 	<div class="space-y-6">
 		<div class="flex items-center justify-between">
@@ -138,7 +100,10 @@
 			</div>
 		{:else if error}
 			<div class="space-y-4 py-8 text-center">
-				<p class="text-destructive">⚠️ {error}</p>
+				<div class="flex items-center justify-center gap-2">
+					<AlertTriangleIcon class="text-destructive h-5 w-5" />
+					<p class="text-destructive font-medium">{error}</p>
+				</div>
 				<Button onclick={loadArticles} variant="outline">Try Again</Button>
 			</div>
 		{:else if articles.length === 0}

@@ -62,184 +62,208 @@
 	<meta name="description" content={article.content.substring(0, 160)} />
 </svelte:head>
 
-<div class="mx-auto max-w-6xl space-y-6">
+<div class="mx-auto max-w-6xl space-y-8 p-6">
 	<!-- Header -->
-	<div class="flex items-center gap-4">
-		<Button href="/articles" variant="outline" size="sm">
-			<ArrowLeftIcon class="mr-2 h-4 w-4" />
-			Back to Articles
-		</Button>
-		<div class="flex-1">
-			<div class="mb-2 flex items-center gap-3">
-				<h1 class="text-3xl font-bold">{article.title}</h1>
-				<StatusBadge status={article.status} />
-			</div>
-			<div class="text-muted-foreground flex items-center gap-4 text-sm">
-				<span>Created {formatDate(article.createdAt)}</span>
-				{#if article.updatedAt !== article.createdAt}
-					<span>•</span>
-					<span>Updated {formatDate(article.updatedAt)}</span>
+	<div class="space-y-6">
+		<!-- Navigation -->
+		<div class="flex items-center justify-between">
+			<Button href="/articles" variant="outline" size="sm">
+				<ArrowLeftIcon class="mr-2 h-4 w-4" />
+				Back to Articles
+			</Button>
+
+			<!-- Action Buttons -->
+			<div class="flex items-center gap-3">
+				{#if ['DRAFT', 'REJECTED'].includes(article.status)}
+					<Button href="/articles/{article.id}/edit" variant="outline" size="sm">
+						<EditIcon class="mr-2 h-4 w-4" />
+						Edit Article
+					</Button>
 				{/if}
-				<span>•</span>
-				<span>{wordCount(article.content)} words</span>
-				<span>•</span>
-				<span>{estimateReadingTime(article.content)}</span>
+
+				<form
+					method="POST"
+					action="?/triggerAnalysis"
+					use:enhance={() => {
+						isAnalyzing = true;
+						return async ({ update }) => {
+							await update();
+							isAnalyzing = false;
+						};
+					}}
+				>
+					<Button type="submit" variant="outline" size="sm" disabled={isAnalyzing}>
+						{#if isAnalyzing}
+							<div class="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-current"></div>
+							Analyzing...
+						{:else}
+							<RefreshCwIcon class="mr-2 h-4 w-4" />
+							Re-analyze
+						{/if}
+					</Button>
+				</form>
 			</div>
 		</div>
-		<div class="flex items-center gap-2">
-			{#if ['DRAFT', 'REJECTED'].includes(article.status)}
-				<Button href="/articles/{article.id}/edit" variant="outline">
-					<EditIcon class="mr-2 h-4 w-4" />
-					Edit
-				</Button>
-			{/if}
 
-			<form
-				method="POST"
-				action="?/triggerAnalysis"
-				use:enhance={() => {
-					isAnalyzing = true;
-					return async ({ update }) => {
-						await update();
-						isAnalyzing = false;
-					};
-				}}
-			>
-				<Button type="submit" variant="outline" disabled={isAnalyzing}>
-					{#if isAnalyzing}
-						<div class="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-current"></div>
-						Analyzing...
-					{:else}
-						<RefreshCwIcon class="mr-2 h-4 w-4" />
-						Re-analyze
-					{/if}
-				</Button>
-			</form>
+		<!-- Title & Status -->
+		<div class="space-y-4">
+			<div class="flex items-start gap-6">
+				<div class="flex-1">
+					<h1 class="text-3xl font-bold leading-tight sm:text-4xl">{article.title}</h1>
+				</div>
+				<div class="flex-shrink-0">
+					<StatusBadge status={article.status} />
+				</div>
+			</div>
+
+			<!-- Metadata -->
+			<div class="text-muted-foreground flex flex-wrap items-center gap-6 text-sm">
+				<div class="flex items-center gap-2">
+					<ClockIcon class="h-4 w-4" />
+					<span>Created {formatDate(article.createdAt)}</span>
+				</div>
+				{#if article.updatedAt !== article.createdAt}
+					<div class="flex items-center gap-2">
+						<EditIcon class="h-4 w-4" />
+						<span>Updated {formatDate(article.updatedAt)}</span>
+					</div>
+				{/if}
+				<div class="flex items-center gap-2">
+					<span>{wordCount(article.content)} words</span>
+				</div>
+				<div class="flex items-center gap-2">
+					<span>{estimateReadingTime(article.content)}</span>
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<!-- Error Display -->
 	{#if form?.error}
 		<div
-			class="bg-destructive/10 border-destructive/20 text-destructive rounded-md border px-4 py-3"
+			class="bg-destructive/10 border-destructive/20 text-destructive rounded-lg border px-6 py-4"
 		>
-			<div class="flex items-center gap-2">
+			<div class="flex items-center gap-3">
 				<XCircleIcon class="h-5 w-5" />
 				<p class="font-medium">{form.error}</p>
 			</div>
 		</div>
 	{/if}
 
-	<div class="grid gap-6 lg:grid-cols-3">
+	<div class="grid gap-8 lg:grid-cols-3">
 		<!-- Main Content -->
-		<div class="space-y-6 lg:col-span-2">
+		<div class="space-y-8 lg:col-span-2">
 			<!-- Featured Image -->
 			{#if article.featuredImage}
-				<img
-					src={article.featuredImage}
-					alt={article.title}
-					class="h-64 w-full rounded-lg border object-cover"
-				/>
+				<div class="overflow-hidden rounded-xl">
+					<img
+						src={article.featuredImage}
+						alt={article.title}
+						class="h-64 w-full object-cover transition-transform hover:scale-105"
+					/>
+				</div>
 			{/if}
 
 			<!-- Article Content -->
 			<div class="prose prose-lg dark:prose-invert max-w-none">
-				<div class="whitespace-pre-wrap">{article.content}</div>
+				<div class="whitespace-pre-wrap leading-relaxed">{article.content}</div>
 			</div>
 
 			<!-- Feedback -->
 			{#if article.feedback}
-				<div class="bg-muted/50 rounded-lg p-4">
-					<div class="mb-2 flex items-center gap-2">
+				<div class="bg-muted/50 rounded-xl p-6">
+					<div class="mb-4 flex items-center gap-3">
 						<MessageSquareIcon class="h-5 w-5" />
-						<h3 class="font-semibold">AI Feedback</h3>
+						<h3 class="text-lg font-semibold">AI Feedback</h3>
 					</div>
-					<p class="text-muted-foreground whitespace-pre-wrap">{article.feedback}</p>
+					<p class="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+						{article.feedback}
+					</p>
 				</div>
 			{/if}
 		</div>
 
 		<!-- Sidebar -->
-		<div class="space-y-6">
+		<div class="space-y-8">
 			<!-- Analysis Results -->
 			{#if analysisResult}
-				<div class="bg-card rounded-lg border p-6">
-					<div class="mb-4 flex items-center gap-2">
-						<BarChart3Icon class="h-5 w-5" />
-						<h3 class="font-semibold">AI Analysis Results</h3>
+				<div class="bg-card rounded-xl border p-8">
+					<div class="mb-6 flex items-center gap-3">
+						<BarChart3Icon class="h-6 w-6" />
+						<h3 class="text-lg font-semibold">AI Analysis Results</h3>
 					</div>
 
 					<!-- Decision -->
-					<div class="mb-4">
+					<div class="mb-6">
 						{#if analysisResult}
 							{@const DecisionIcon = getDecisionIcon(analysisResult.decision)}
-							<div class="mb-2 flex items-center gap-2">
-								<DecisionIcon class="h-5 w-5 {getDecisionColor(analysisResult.decision)}" />
-								<span class="font-medium {getDecisionColor(analysisResult.decision)}">
+							<div class="mb-3 flex items-center gap-3">
+								<DecisionIcon class="h-6 w-6 {getDecisionColor(analysisResult.decision)}" />
+								<span class="text-lg font-semibold {getDecisionColor(analysisResult.decision)}">
 									{analysisResult.decision.replace(/_/g, ' ')}
 								</span>
 							</div>
 						{/if}
-						<div class="text-muted-foreground flex items-center gap-2 text-sm">
+						<div class="text-muted-foreground flex items-center gap-3 text-sm">
 							<span>Confidence:</span>
-							<span class="font-medium {getScoreColor(analysisResult.confidenceScore)}">
+							<span class="font-semibold {getScoreColor(analysisResult.confidenceScore)}">
 								{formatScore(analysisResult.confidenceScore)}/10
 							</span>
 						</div>
 					</div>
 
 					<!-- Scores -->
-					<div class="mb-4 space-y-3">
-						<div class="flex items-center justify-between">
-							<span class="text-sm">Content Quality</span>
+					<div class="mb-8 space-y-4">
+						<div class="flex items-center justify-between py-2">
+							<span class="font-medium">Content Quality</span>
 							<span
-								class="font-medium {getScoreColor((analysisResult.readabilityScore * 10) / 10)}"
+								class="font-semibold {getScoreColor((analysisResult.readabilityScore * 10) / 10)}"
 							>
-								{formatScore(analysisResult.readabilityScore / 10)}/10
+								{formatScore((analysisResult.readabilityScore * 10) / 10)}/10
 							</span>
 						</div>
-						<div class="flex items-center justify-between">
-							<span class="text-sm">Grammar</span>
-							<span class="font-medium {getScoreColor((analysisResult.grammarScore * 10) / 10)}">
-								{formatScore(analysisResult.grammarScore / 10)}/10
+						<div class="flex items-center justify-between py-2">
+							<span class="font-medium">Grammar</span>
+							<span class="font-semibold {getScoreColor((analysisResult.grammarScore * 10) / 10)}">
+								{formatScore((analysisResult.grammarScore * 10) / 10)}/10
 							</span>
 						</div>
-						<div class="flex items-center justify-between">
-							<span class="text-sm">SEO Score</span>
-							<span class="font-medium {getScoreColor((analysisResult.seoScore * 10) / 10)}">
-								{formatScore(analysisResult.seoScore / 10)}/10
+						<div class="flex items-center justify-between py-2">
+							<span class="font-medium">SEO Score</span>
+							<span class="font-semibold {getScoreColor((analysisResult.seoScore * 10) / 10)}">
+								{formatScore((analysisResult.seoScore * 10) / 10)}/10
 							</span>
 						</div>
-						<div class="flex items-center justify-between">
-							<span class="text-sm">Originality</span>
+						<div class="flex items-center justify-between py-2">
+							<span class="font-medium">Originality</span>
 							<span
-								class="font-medium {getScoreColor((analysisResult.originalityScore * 10) / 10)}"
+								class="font-semibold {getScoreColor((analysisResult.originalityScore * 10) / 10)}"
 							>
-								{formatScore(analysisResult.originalityScore / 10)}/10
+								{formatScore((analysisResult.originalityScore * 10) / 10)}/10
 							</span>
 						</div>
 					</div>
 
 					<!-- Analysis Details -->
 					<Tabs value="analysis" class="w-full">
-						<TabsList class="grid w-full grid-cols-2">
+						<TabsList class="mb-6 grid w-full grid-cols-2">
 							<TabsTrigger value="analysis">Analysis</TabsTrigger>
 							<TabsTrigger value="recommendations">Tips</TabsTrigger>
 						</TabsList>
 
-						<TabsContent value="analysis" class="mt-4">
-							<div class="space-y-2 text-sm">
-								<p class="font-medium">AI Analysis:</p>
-								<p class="text-muted-foreground whitespace-pre-wrap">
+						<TabsContent value="analysis" class="mt-6">
+							<div class="space-y-3">
+								<p class="font-semibold">AI Analysis:</p>
+								<p class="text-muted-foreground whitespace-pre-wrap leading-relaxed">
 									{analysisResult.aiAnalysis}
 								</p>
 							</div>
 						</TabsContent>
 
-						<TabsContent value="recommendations" class="mt-4">
-							<div class="space-y-2 text-sm">
-								<p class="font-medium">Recommendations:</p>
-								<p class="text-muted-foreground whitespace-pre-wrap">
+						<TabsContent value="recommendations" class="mt-6">
+							<div class="space-y-3">
+								<p class="font-semibold">Recommendations:</p>
+								<p class="text-muted-foreground whitespace-pre-wrap leading-relaxed">
 									{analysisResult.recommendations}
 								</p>
 							</div>
@@ -247,18 +271,27 @@
 					</Tabs>
 
 					<!-- Analysis Metadata -->
-					<div class="text-muted-foreground mt-4 space-y-1 border-t pt-4 text-xs">
-						<div>Model: {analysisResult.aiModel}</div>
-						<div>Analyzed: {formatDate(analysisResult.analyzedAt)}</div>
-						<div>Processing: {analysisResult.processingTimeMs}ms</div>
+					<div class="text-muted-foreground mt-8 space-y-2 border-t pt-6 text-sm">
+						<div class="flex justify-between">
+							<span>Model:</span>
+							<span class="font-medium">{analysisResult.aiModel}</span>
+						</div>
+						<div class="flex justify-between">
+							<span>Analyzed:</span>
+							<span class="font-medium">{formatDate(analysisResult.analyzedAt)}</span>
+						</div>
+						<div class="flex justify-between">
+							<span>Processing:</span>
+							<span class="font-medium">{analysisResult.processingTimeMs}ms</span>
+						</div>
 					</div>
 				</div>
 			{:else}
-				<div class="bg-card space-y-4 rounded-lg border p-6 text-center">
-					<ClockIcon class="text-muted-foreground mx-auto h-12 w-12" />
-					<div>
-						<h3 class="mb-2 font-semibold">Analysis Pending</h3>
-						<p class="text-muted-foreground mb-4 text-sm">
+				<div class="bg-card space-y-6 rounded-xl border p-8 text-center">
+					<ClockIcon class="text-muted-foreground mx-auto h-16 w-16" />
+					<div class="space-y-4">
+						<h3 class="text-xl font-semibold">Analysis Pending</h3>
+						<p class="text-muted-foreground text-base leading-relaxed">
 							{#if article.status === 'UNDER_AI_REVIEW'}
 								AI analysis is currently in progress. Results will appear shortly.
 							{:else}
@@ -277,7 +310,7 @@
 								};
 							}}
 						>
-							<Button type="submit" size="sm" disabled={isAnalyzing}>
+							<Button type="submit" size="lg" disabled={isAnalyzing} class="mt-4">
 								{#if isAnalyzing}
 									<div
 										class="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-current"
@@ -295,38 +328,38 @@
 
 			<!-- Analysis History -->
 			{#if analysisHistory.length > 0}
-				<div class="bg-card rounded-lg border p-6">
-					<div class="mb-4 flex items-center gap-2">
-						<HistoryIcon class="h-5 w-5" />
-						<h3 class="font-semibold">Analysis History</h3>
+				<div class="bg-card rounded-xl border p-8">
+					<div class="mb-6 flex items-center gap-3">
+						<HistoryIcon class="h-6 w-6" />
+						<h3 class="text-lg font-semibold">Analysis History</h3>
 					</div>
 
-					<div class="space-y-3">
+					<div class="space-y-6">
 						{#each analysisHistory.slice(0, 5) as history}
-							<div class="flex items-start gap-3 border-b pb-3 last:border-b-0">
-								<div class="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
-								<div class="flex-1 text-sm">
-									<div class="mb-1 flex items-center gap-2">
+							<div class="flex items-start gap-4 border-b pb-6 last:border-b-0 last:pb-0">
+								<div class="bg-primary mt-3 h-3 w-3 flex-shrink-0 rounded-full"></div>
+								<div class="flex-1">
+									<div class="mb-2 flex items-center gap-3">
 										{#if history.fromStatus}
-											<span class="text-muted-foreground">
+											<span class="text-muted-foreground font-medium">
 												{history.fromStatus.replace(/_/g, ' ')}
 											</span>
 											<span class="text-muted-foreground">→</span>
 										{/if}
-										<span class="font-medium">
+										<span class="font-semibold">
 											{history.toStatus.replace(/_/g, ' ')}
 										</span>
 									</div>
-									<p class="text-muted-foreground mb-1 text-xs">
+									<p class="text-muted-foreground mb-3 leading-relaxed">
 										{history.reason}
 									</p>
-									<div class="text-muted-foreground flex items-center gap-2 text-xs">
+									<div class="text-muted-foreground flex flex-wrap items-center gap-3 text-sm">
 										<span>{formatDate(history.createdAt)}</span>
 										<span>•</span>
 										<span>by {history.performedBy}</span>
 										{#if history.confidenceScore}
 											<span>•</span>
-											<span>{formatScore(history.confidenceScore)}/10</span>
+											<span>Score: {formatScore(history.confidenceScore)}/10</span>
 										{/if}
 									</div>
 								</div>

@@ -192,25 +192,29 @@
 					<div class="mb-4 space-y-3">
 						<div class="flex items-center justify-between">
 							<span class="text-sm">Content Quality</span>
-							<span class="font-medium {getScoreColor(analysisResult.readabilityScore / 10)}">
+							<span
+								class="font-medium {getScoreColor((analysisResult.readabilityScore * 10) / 10)}"
+							>
 								{formatScore(analysisResult.readabilityScore / 10)}/10
 							</span>
 						</div>
 						<div class="flex items-center justify-between">
 							<span class="text-sm">Grammar</span>
-							<span class="font-medium {getScoreColor(analysisResult.grammarScore / 10)}">
+							<span class="font-medium {getScoreColor((analysisResult.grammarScore * 10) / 10)}">
 								{formatScore(analysisResult.grammarScore / 10)}/10
 							</span>
 						</div>
 						<div class="flex items-center justify-between">
 							<span class="text-sm">SEO Score</span>
-							<span class="font-medium {getScoreColor(analysisResult.seoScore / 10)}">
+							<span class="font-medium {getScoreColor((analysisResult.seoScore * 10) / 10)}">
 								{formatScore(analysisResult.seoScore / 10)}/10
 							</span>
 						</div>
 						<div class="flex items-center justify-between">
 							<span class="text-sm">Originality</span>
-							<span class="font-medium {getScoreColor(analysisResult.originalityScore / 10)}">
+							<span
+								class="font-medium {getScoreColor((analysisResult.originalityScore * 10) / 10)}"
+							>
 								{formatScore(analysisResult.originalityScore / 10)}/10
 							</span>
 						</div>

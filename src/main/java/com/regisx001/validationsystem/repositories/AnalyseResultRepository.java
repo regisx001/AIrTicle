@@ -14,7 +14,14 @@ import java.util.UUID;
 @Repository
 public interface AnalyseResultRepository extends JpaRepository<AnalyseResult, UUID> {
 
-    Optional<AnalyseResult> findByArticleId(UUID articleId);
+    // Use Spring Data JPA method naming convention with First to get only one
+    // result
+    Optional<AnalyseResult> findFirstByArticleIdOrderByAnalyzedAtDesc(UUID articleId);
+
+    // Keep the original method for backward compatibility, but rename it to
+    // indicate it may return multiple
+    @Query("SELECT ar FROM AnalyseResult ar WHERE ar.article.id = ?1")
+    List<AnalyseResult> findAllByArticleId(UUID articleId);
 
     List<AnalyseResult> findByDecision(AnalyseDecision decision);
 

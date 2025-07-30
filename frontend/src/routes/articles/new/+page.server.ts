@@ -64,10 +64,11 @@ export const actions = {
 			const article = await response.json();
 
 			// Redirect to the article detail page
-			throw redirect(303, `/articles/${article.id}`);
+			throw redirect(308, `/articles/${article.id}`);
 		} catch (error) {
-			if (error instanceof Response) {
-				throw error; // Re-throw redirects
+			// Re-throw redirect responses
+			if (error && typeof error === 'object' && 'status' in error && 'location' in error) {
+				throw error;
 			}
 
 			console.error('Error creating article:', error);

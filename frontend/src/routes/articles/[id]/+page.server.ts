@@ -1,3 +1,4 @@
+import { invalidateAll } from '$app/navigation';
 import type { PageServerLoad, Actions } from './$types';
 import { error, redirect } from '@sveltejs/kit';
 
@@ -72,7 +73,6 @@ export const actions = {
 			}
 
 			// Redirect back to the article page to see the new results
-			throw redirect(303, `/articles/${id}`);
 		} catch (error) {
 			if (error instanceof Response) {
 				throw error; // Re-throw redirects
@@ -84,5 +84,7 @@ export const actions = {
 				error: 'An unexpected error occurred while triggering analysis'
 			};
 		}
+
+		redirect(308, `/articles/${id}`);
 	}
 } satisfies Actions;

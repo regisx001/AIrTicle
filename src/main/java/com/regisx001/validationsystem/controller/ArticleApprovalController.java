@@ -1,5 +1,6 @@
 package com.regisx001.validationsystem.controller;
 
+import com.regisx001.validationsystem.domain.dtos.PageResponse;
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.repositories.AnalyseHistoryRepository;
 import com.regisx001.validationsystem.services.AIAnalyseService;
@@ -25,8 +26,8 @@ public class ArticleApprovalController {
     private final AnalyseHistoryRepository analyseHistoryRepository;
 
     @GetMapping
-    public ResponseEntity<?> getAllArticles(Pageable pageable) {
-        return ResponseEntity.ok(articleService.getAllArticles(pageable));
+    public ResponseEntity<PageResponse<Article>> getAllArticles(Pageable pageable) {
+        return ResponseEntity.ok(PageResponse.of(articleService.getAllArticles(pageable)));
     }
 
     @GetMapping("/{id}")

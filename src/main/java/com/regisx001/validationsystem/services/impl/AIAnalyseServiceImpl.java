@@ -39,12 +39,11 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
 
     @Override
     public AnalyseResult getLatestApprovalResult(UUID id) {
-        AnalyseResult result = analyseResultRepository.findByArticleId(id)
-                .orElseThrow(() -> new RuntimeException("Not Result for this article"));
+        AnalyseResult result = analyseResultRepository.findFirstByArticleIdOrderByAnalyzedAtDesc(id)
+                .orElseThrow(() -> new RuntimeException("No Result for this article"));
         return result;
     }
 
-    @Async
     @Override
     public AnalyseResult analyseArticleManual(UUID id) {
         return analyse(id);

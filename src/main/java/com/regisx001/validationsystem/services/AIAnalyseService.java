@@ -3,10 +3,9 @@ package com.regisx001.validationsystem.services;
 import java.util.UUID;
 
 import com.regisx001.validationsystem.domain.entities.AnalyseResult;
-import com.regisx001.validationsystem.domain.entities.Article;
 
 public interface AIAnalyseService {
-    void analyseArticle(Article article);
+    void analyseArticle(UUID id);
 
     AnalyseResult analyseArticleManual(UUID id);
 

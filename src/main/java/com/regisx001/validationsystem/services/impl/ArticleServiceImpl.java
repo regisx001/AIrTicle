@@ -36,7 +36,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article savedArticle = articleRepository.save(article);
 
-        aiAnalyseService.analyseArticle(savedArticle);
+        aiAnalyseService.analyseArticle(savedArticle.getId());
         return savedArticle;
     }
 

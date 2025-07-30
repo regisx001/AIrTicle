@@ -7,10 +7,12 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.regisx001.validationsystem.domain.entities.AnalyseHistory;
 import com.regisx001.validationsystem.domain.entities.AnalyseResult;
 import com.regisx001.validationsystem.domain.entities.Article;
 import com.regisx001.validationsystem.domain.enums.AnalyseDecision;
 import com.regisx001.validationsystem.domain.enums.ArticleStatus;
+import com.regisx001.validationsystem.repositories.AnalyseHistoryRepository;
 import com.regisx001.validationsystem.repositories.AnalyseResultRepository;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
 import com.regisx001.validationsystem.services.AIAnalyseService;
@@ -25,6 +27,7 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
     private final ArticleUtils utils;
     private final AnalyseResultRepository analyseResultRepository;
     private final ArticleRepository articleRepository;
+    private final AnalyseHistoryRepository analyseHistoryRepository;
     private final ChatClient chatClient;
 
     @Async
@@ -49,6 +52,15 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
 
     private AnalyseResult analyse(UUID id) {
         Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("Article not found"));
+        AnalyseHistory historySnapshot = new AnalyseHistory();
+
+        // HISTORY RELATED
+        historySnapshot.setArticle(article);
+        historySnapshot.setAiModel(utils.getUsedLLM());
+        historySnapshot.setFromStatus(article.getStatus());
+        historySnapshot.setPerformedBy("AI System");
+        // ---------------
+
         long startTime = System.currentTimeMillis();
         if (!utils.isValidForAnalysis(article)) {
             throw new RuntimeException("Article doesn't meet basic requirements by system-analysis");
@@ -73,9 +85,17 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
             article.setStatus(ArticleStatus.MANUAL_REVIEW_REQUIRED);
         }
 
+        // HISTORY RELATED
+        historySnapshot.setToStatus(article.getStatus());
+        historySnapshot.setReason(result.getAiAnalysis());
+        historySnapshot.setNotes(result.getRecommendations());
+        historySnapshot.setConfidenceScore(result.getConfidenceScore());
+        historySnapshot.setProcessingTimeMs(analyzeTimeMs);
+        // ---------------
+
         article.setFeedback(result.getAiAnalysis());
         articleRepository.save(article);
-
+        analyseHistoryRepository.save(historySnapshot);
         return analyseResultRepository.save(result);
     }
 }

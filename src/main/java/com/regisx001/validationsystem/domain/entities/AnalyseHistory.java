@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.regisx001.validationsystem.domain.enums.AnalyseAction;
 import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 
 import java.time.LocalDateTime;
@@ -29,10 +28,6 @@ public class AnalyseHistory {
     @JoinColumn(name = "article_id", nullable = false)
     @JsonIgnore
     private Article article;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AnalyseAction action;
 
     @Enumerated(EnumType.STRING)
     private ArticleStatus fromStatus;

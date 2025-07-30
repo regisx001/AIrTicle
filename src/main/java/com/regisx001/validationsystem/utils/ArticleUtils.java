@@ -3,6 +3,7 @@ package com.regisx001.validationsystem.utils;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +23,12 @@ public class ArticleUtils {
     private final AIAnalysisConfig config;
     private final ObjectMapper objectMapper;
 
-    // @Value("${spring.ai.openai.chat.options.model}")
-    private String model = "llama3-70b-8192";
+    @Value("${spring.ai.openai.chat.options.model}")
+    private String model;
+
+    public String getUsedLLM() {
+        return model;
+    }
 
     public boolean isValidForAnalysis(Article article) {
         int wordCount = article.getContent().split("\\s+").length;

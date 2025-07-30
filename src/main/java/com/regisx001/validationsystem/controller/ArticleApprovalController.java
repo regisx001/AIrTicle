@@ -1,6 +1,7 @@
 package com.regisx001.validationsystem.controller;
 
 import com.regisx001.validationsystem.domain.entities.Article;
+import com.regisx001.validationsystem.repositories.AnalyseHistoryRepository;
 import com.regisx001.validationsystem.services.AIAnalyseService;
 import com.regisx001.validationsystem.services.ArticleService;
 
@@ -21,6 +22,7 @@ public class ArticleApprovalController {
     // private final ArticleRepository articleRepository;
     private final ArticleService articleService;
     private final AIAnalyseService aiAnalyseService;
+    private final AnalyseHistoryRepository analyseHistoryRepository;
 
     @GetMapping
     public ResponseEntity<?> getAllArticles(Pageable pageable) {
@@ -30,6 +32,11 @@ public class ArticleApprovalController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getArticle(@PathVariable UUID id) {
         return ResponseEntity.ok(articleService.getArticleById(id));
+    }
+
+    @GetMapping("/{id}/history")
+    public ResponseEntity<?> getArticleAnalyseHistory(@PathVariable UUID id) {
+        return ResponseEntity.ok(analyseHistoryRepository.findByArticle_IdOrderByCreatedAtDesc(id));
     }
 
     @PostMapping

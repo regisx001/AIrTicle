@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.regisx001.validationsystem.domain.enums.AnalyseAction;
 import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 
@@ -39,7 +40,8 @@ public class AnalyseHistory {
     @Enumerated(EnumType.STRING)
     private ArticleStatus toStatus;
 
-    private String performedBy; // "AI_SYSTEM" or user identifier
+    @Column(nullable = false)
+    private String performedBy;
 
     @Column(columnDefinition = "TEXT")
     private String reason;
@@ -47,11 +49,33 @@ public class AnalyseHistory {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @Column(columnDefinition = "TEXT")
+    private String metadata;
+
+    private Double confidenceScore;
+    private String aiModel;
+    private Integer processingTimeMs;
+
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @JsonProperty("articleId")
+    public UUID getArticleId() {
+        return article != null ? article.getId() : null;
+    }
 
     @PrePersist
     public void onCreate() {
-        this.timestamp = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

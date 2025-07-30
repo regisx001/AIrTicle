@@ -1,5 +1,6 @@
 package com.regisx001.validationsystem.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.ai.chat.client.ChatClient;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.regisx001.validationsystem.domain.entities.AnalyseResult;
 import com.regisx001.validationsystem.domain.entities.Article;
+import com.regisx001.validationsystem.domain.enums.AnalyseDecision;
 import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 import com.regisx001.validationsystem.repositories.AnalyseResultRepository;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
@@ -40,8 +42,21 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
 
         AnalyseResult result = utils.buildApprovalResult(article, utils.parseAIResponse(aiResponse), analyzeTimeMs);
         // article.setStatus(ArticleStatus.valueOf(result.getDecision().toString()));
-        // if(result.getDecision().equals(a)){}
+        if (result.getDecision().equals(AnalyseDecision.APPROVED)) {
+            article.setApprovedAt(LocalDateTime.now());
+            article.setStatus(ArticleStatus.APPROVED);
+            article.setApprovedBy("AI System");
+        } else if (result.getDecision().equals(AnalyseDecision.REJECTED)) {
+            article.setRejectedAt(LocalDateTime.now());
+            article.setStatus(ArticleStatus.REJECTED);
+            article.setRejectedBy("AI System");
+        } else if (result.getDecision().equals(AnalyseDecision.REQUIRES_MANUAL_REVIEW)) {
+            article.setStatus(ArticleStatus.MANUAL_REVIEW_REQUIRED);
+        }
+
+        article.setFeedback(result.getAiAnalysis());
         analyseResultRepository.save(result);
+        articleRepository.save(article);
         // return result;
     }
 
@@ -66,6 +81,20 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
         Integer analyzeTimeMs = (int) (endTime - startTime);
 
         AnalyseResult result = utils.buildApprovalResult(article, utils.parseAIResponse(aiResponse), analyzeTimeMs);
+
+        if (result.getDecision().equals(AnalyseDecision.APPROVED)) {
+            article.setApprovedAt(LocalDateTime.now());
+            article.setStatus(ArticleStatus.APPROVED);
+            article.setApprovedBy("AI System");
+        } else if (result.getDecision().equals(AnalyseDecision.REJECTED)) {
+            article.setRejectedAt(LocalDateTime.now());
+            article.setStatus(ArticleStatus.REJECTED);
+            article.setRejectedBy("AI System");
+        } else if (result.getDecision().equals(AnalyseDecision.REQUIRES_MANUAL_REVIEW)) {
+            article.setStatus(ArticleStatus.MANUAL_REVIEW_REQUIRED);
+        }
+
+        articleRepository.save(article);
         return analyseResultRepository.save(result);
     }
 

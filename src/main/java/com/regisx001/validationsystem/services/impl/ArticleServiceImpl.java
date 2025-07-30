@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.validationsystem.domain.entities.Article;
+import com.regisx001.validationsystem.domain.enums.ArticleStatus;
 import com.regisx001.validationsystem.repositories.ArticleRepository;
 import com.regisx001.validationsystem.services.AIAnalyseService;
 import com.regisx001.validationsystem.services.ArticleService;
@@ -34,6 +35,8 @@ public class ArticleServiceImpl implements ArticleService {
             throw new IllegalArgumentException("Article content cannot be null or empty");
         }
 
+        article.setIsPublished(false);
+        article.setStatus(ArticleStatus.DRAFT);
         Article savedArticle = articleRepository.save(article);
 
         aiAnalyseService.analyseArticle(savedArticle.getId());

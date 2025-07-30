@@ -17,6 +17,10 @@ AIrTicle is a sophisticated AI-powered article validation and approval system bu
 
 ### ⚡ **Automated Workflow**
 
+- **Asynchronous AI Analysis**: Articles are automatically submitted for AI analysis upon creation using `@Async` processing for non-blocking operations
+- **Dual Analysis Modes**:
+  - **Automatic**: Background AI analysis triggered on article creation
+  - **Manual**: On-demand analysis via dedicated endpoint
 - **Smart Decision Making**: Automatically classifies articles as `APPROVED`, `REJECTED`, or `REQUIRES_MANUAL_REVIEW`
 - **Actionable Feedback**: Generates specific, AI-driven recommendations for content improvement
 - **Audit Trail**: Complete history tracking of all analysis activities and status changes
@@ -25,8 +29,9 @@ AIrTicle is a sophisticated AI-powered article validation and approval system bu
 
 - **RESTful API**: Clean, well-documented REST endpoints for all operations
 - **Database Persistence**: Robust data storage with JPA/Hibernate integration
-- **Async Processing**: Non-blocking AI analysis for optimal performance
+- **Async Processing**: Non-blocking AI analysis using `@Async` for optimal performance and fast response times
 - **Relationship Management**: Proper entity relationships with circular reference protection
+- **Dual Workflow**: Supports both automatic (background) and manual (on-demand) AI analysis
 
 ## 🏗️ Architecture Overview
 
@@ -37,7 +42,7 @@ AIrTicle is a sophisticated AI-powered article validation and approval system bu
                               │                          │
                               │                          ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend/UI   │    │   JSON Response  │    │   AI Analysis   │
+│   Frontend/UI   │<---│   JSON Response  │    │   AI Analysis   │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                                                          │
                                                          ▼
@@ -194,7 +199,7 @@ The application will start on `http://localhost:8080`
 
 ### 📝 **Article Management**
 
-#### Create Article
+#### Create Article (with Automatic AI Analysis)
 
 ```http
 POST /api/articles
@@ -207,7 +212,7 @@ Content-Type: application/json
 }
 ```
 
-**Response:**
+**Response (Immediate):**
 
 ```json
 {
@@ -221,10 +226,35 @@ Content-Type: application/json
 }
 ```
 
+> **Note**: AI analysis starts automatically in the background using `@Async` processing. The article status will update once analysis completes.
+
 #### Get All Articles (Paginated)
 
 ```http
 GET /api/articles?page=0&size=10&sort=createdAt,desc
+```
+
+**Response:**
+
+```json
+{
+  "content": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "title": "The Future of AI in Content Creation",
+      "status": "APPROVED",
+      "isPublished": false,
+      "createdAt": "2025-07-30T10:00:00",
+      "updatedAt": "2025-07-30T10:05:00"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10
+  },
+  "totalElements": 1,
+  "totalPages": 1
+}
 ```
 
 #### Get Single Article
@@ -233,9 +263,27 @@ GET /api/articles?page=0&size=10&sort=createdAt,desc
 GET /api/articles/{articleId}
 ```
 
+**Response:**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "The Future of AI in Content Creation",
+  "content": "Full article content...",
+  "featuredImage": "https://example.com/image.jpg",
+  "status": "APPROVED",
+  "isPublished": false,
+  "feedback": "Article demonstrates excellent quality...",
+  "createdAt": "2025-07-30T10:00:00",
+  "updatedAt": "2025-07-30T10:05:00",
+  "approvedAt": "2025-07-30T10:05:00",
+  "approvedBy": "AI System"
+}
+```
+
 ### 🤖 **AI Analysis**
 
-#### Submit Article for Review
+#### Manual Article Review (On-Demand)
 
 ```http
 POST /api/articles/{articleId}/review
@@ -260,10 +308,32 @@ POST /api/articles/{articleId}/review
 }
 ```
 
+> **Use Case**: Trigger manual analysis for articles that need re-evaluation or for testing purposes.
+
 #### Get Latest Analysis Result
 
 ```http
 GET /api/articles/{articleId}/review
+```
+
+**Response:**
+
+```json
+{
+  "id": "456e7890-e89b-12d3-a456-426614174000",
+  "articleId": "123e4567-e89b-12d3-a456-426614174000",
+  "decision": "APPROVED",
+  "confidenceScore": 0.92,
+  "aiAnalysis": "Comprehensive analysis results...",
+  "recommendations": "Improvement suggestions...",
+  "readabilityScore": 8.5,
+  "grammarScore": 9.2,
+  "seoScore": 7.8,
+  "originalityScore": 9.1,
+  "analyzedAt": "2025-07-30T10:05:00",
+  "aiModel": "llama3-8b-8192",
+  "processingTimeMs": 2340
+}
 ```
 
 ### 📊 **History & Tracking**
@@ -291,9 +361,47 @@ GET /api/articles/{articleId}/history
     "processingTimeMs": 2340,
     "createdAt": "2025-07-30T10:05:00",
     "updatedAt": "2025-07-30T10:05:00"
+  },
+  {
+    "id": "456e7890-e89b-12d3-a456-426614174001",
+    "articleId": "123e4567-e89b-12d3-a456-426614174000",
+    "fromStatus": null,
+    "toStatus": "DRAFT",
+    "performedBy": "user123",
+    "reason": "Article created",
+    "notes": "Initial article submission",
+    "createdAt": "2025-07-30T10:00:00",
+    "updatedAt": "2025-07-30T10:00:00"
   }
 ]
 ```
+
+## 🔄 **Analysis Workflow**
+
+### Automatic Analysis (Default)
+
+1. **Article Creation** → Immediate response with `DRAFT` status
+2. **Background Processing** → `@Async` AI analysis starts automatically
+3. **Status Update** → Article status changes to `APPROVED`, `REJECTED`, or `MANUAL_REVIEW_REQUIRED`
+4. **History Logging** → Analysis results and status changes are recorded
+
+### Manual Analysis (On-Demand)
+
+1. **Trigger Review** → `POST /api/articles/{id}/review`
+2. **Synchronous Processing** → Immediate AI analysis
+3. **Direct Response** → Analysis results returned immediately
+4. **Status Update** → Article status updated based on results
+
+## 📋 **Complete API Reference**
+
+| Method | Endpoint                     | Description                                  | Response Type          |
+| ------ | ---------------------------- | -------------------------------------------- | ---------------------- |
+| `GET`  | `/api/articles`              | Get paginated list of articles               | `Page<Article>`        |
+| `GET`  | `/api/articles/{id}`         | Get single article by ID                     | `Article`              |
+| `POST` | `/api/articles`              | Create new article (triggers async analysis) | `Article`              |
+| `POST` | `/api/articles/{id}/review`  | Manual AI analysis (synchronous)             | `AnalyseResult`        |
+| `GET`  | `/api/articles/{id}/review`  | Get latest analysis result                   | `AnalyseResult`        |
+| `GET`  | `/api/articles/{id}/history` | Get article analysis history                 | `List<AnalyseHistory>` |
 
 ## ⚙️ Configuration
 
@@ -358,17 +466,34 @@ mvn test
 ### Example Test Cases
 
 ```bash
-# Test article creation
+# Test article creation (triggers automatic async AI analysis)
 curl -X POST http://localhost:8080/api/articles \
   -H "Content-Type: application/json" \
-  -d '{"title":"Test Article","content":"This is a test article content with sufficient length to meet minimum requirements for analysis."}'
+  -d '{"title":"Test Article","content":"This is a test article content with sufficient length to meet minimum requirements for analysis. The content should be comprehensive enough to trigger meaningful AI analysis and provide valuable feedback for content improvement."}'
 
-# Test AI analysis
+# Check article status after creation (may still be DRAFT if analysis is ongoing)
+curl -X GET http://localhost:8080/api/articles/{articleId}
+
+# Trigger manual AI analysis (synchronous)
 curl -X POST http://localhost:8080/api/articles/{articleId}/review
 
-# Test history retrieval
+# Get latest analysis results
+curl -X GET http://localhost:8080/api/articles/{articleId}/review
+
+# Get complete analysis history
 curl -X GET http://localhost:8080/api/articles/{articleId}/history
+
+# Get paginated articles list
+curl -X GET "http://localhost:8080/api/articles?page=0&size=5&sort=createdAt,desc"
 ```
+
+### Testing Workflow
+
+1. **Create Article**: Returns immediately with `DRAFT` status
+2. **Wait for Analysis**: Background processing completes (typically 2-5 seconds)
+3. **Check Status**: Article status updates to final decision
+4. **Review Results**: Get detailed analysis and recommendations
+5. **Track History**: View complete audit trail
 
 ## 🤝 Contributing
 
